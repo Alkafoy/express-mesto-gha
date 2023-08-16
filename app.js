@@ -18,15 +18,15 @@ app.use((req, res, next) => {
   next();
 });
 
-// Обработчик несуществующих путей
-app.use((req, res) => {
-  res.status(404).json({ message: 'Запрашиваемый ресурс не найден' });
-});
-
 // Используем роуты пользователей
 app.use('/users', usersRouter);
 // Используем роуты карточек
 app.use('/cards', cardsRouter);
+
+// Обработчик несуществующих путей
+app.use('*', (req, res) => {
+  res.status(404).json({ message: 'Запрашиваемый ресурс не найден' });
+});
 
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
