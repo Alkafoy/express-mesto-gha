@@ -1,0 +1,27 @@
+{
+  "name": "sergey",
+  "version": "1.0.0",
+  "description": "Проект Mesto фронтенд + бэкенд",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "npx eslint .",
+    "lintfix": "eslint . --fix"
+  },
+  "author": "serg",
+  "license": "ISC",
+  "devDependencies": {
+    "eslint": "^8.47.0",
+    "eslint-config-airbnb": "^19.0.4",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.28.0",
+    "nodemon": "^3.0.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "express": "^4.18.2",
+    "mongoose": "^7.4.3"
+  }
+}
