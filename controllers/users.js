@@ -44,10 +44,10 @@ module.exports.createUser = (req, res) => {
 
 module.exports.editUserData = (req, res) => {
   const { name, about } = req.body;
-  if (name.length < 2 || name.length > 30) {
+  if (name && (name.length < 2 || name.length > 30)) {
     return res.status(400).send({ message: 'Длина поля name должна быть от 2 до 30 символов' });
   }
-  if (about.length < 2 || about.length > 30) {
+  if (about && (about.length < 2 || about.length > 30)) {
     return res.status(400).send({ message: 'Длина поля about должна быть от 2 до 30 символов' });
   }
   return User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })

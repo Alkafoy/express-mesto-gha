@@ -17,7 +17,10 @@ module.exports.createCard = (req, res) => {
 };
 
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  if (!mongoose.Types.ObjectId.isValid(req.params.cardId)) {
+    return res.status(400).send({ message: 'Некорректный формат ID карточки' });
+  }
+  return Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (!card) {
         res.status(404).send({ message: 'Карточка не найдена' });
