@@ -5,7 +5,7 @@ const usersRouter = require('./routes/users'); // Подключаем роут�
 const cardsRouter = require('./routes/cards'); // Подключаем роуты карточек
 
 // Слушаем 3000 порт
-const { PORT = 3000 } = process.env;
+const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
 const app = express();
 
 // Парсим входящие запросы в формате JSON
@@ -29,7 +29,7 @@ app.use('*', (req, res) => {
 });
 
 // подключаемся к серверу mongo
-mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
+mongoose.connect(DB_URL, {
   useNewUrlParser: true,
 });
 
