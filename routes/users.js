@@ -1,7 +1,9 @@
 const express = require('express');
+const { celebrate, Joi } = require('celebrate');
 const {
-  getAllUsers, getUserById, createUser, editUserData, editUserAvatar,
+  getAllUsers, getUserById, editUserData, editUserAvatar, getUserInfo,
 } = require('../controllers/users');
+const { urlRegex } = require('../utils/constants');
 
 const router = express.Router();
 
@@ -9,15 +11,28 @@ const router = express.Router();
 router.get('/', getAllUsers);
 
 // Роут для получения пользователя по _id
-router.get('/:userId', getUserById);
+router.get('/:userId', celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().length(24).hex().required(),
+  }),
+}), getUserById);
 
-// Роут для создания пользователя
-router.post('/', createUser);
+// Роут для получения данных пользователя
+router.patch('/me', getUserInfo);
 
 // Роут для редактирования данных пользователя
-router.patch('/me', editUserData);
+router.patch('/me', celebrate({
+  body: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    about: Joi.string().min(2).max(30),
+  }),
+}), editUserData);
 
 // Роут для редактирования аватара
-router.patch('/me/avatar', editUserAvatar);
+router.patch('/me/avatar', celebrate({
+  body: Joi.object().keys({
+    avatar: Joi.string().pattern(urlRegex),
+  }),
+}), editUserAvatar);
 
 module.exports = router;
