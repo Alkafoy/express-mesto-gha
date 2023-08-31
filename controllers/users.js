@@ -48,8 +48,8 @@ module.exports.createUser = (req, res, next) => {
     .then((hash) => User.create({
       name, about, avatar, email, password: hash,
     })
-      .then(() => res.status(201).send({
-        name, about, avatar, email,
+      .then((user) => res.status(201).send({
+        name: user.name, about: user.about, avatar: user.avatar, _id: user._id, email: user.email,
       }))
       .catch((err) => {
         if (err.code === 11000) {
@@ -97,9 +97,10 @@ module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      if (user) {
-        res.send({ data: user });
-      } else { next(new NotFoundError('Пользователь не найден')); }
+      // создадим токен
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      // вернём токен
+      res.send({ token });
     })
     .catch((error) => {
       if (error instanceof CastError) {
