@@ -11,6 +11,13 @@ const app = express();
 
 // Парсим входящие запросы в формате JSON
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+
+// подключаемся к серверу mongo
+mongoose.connect(DB_URL, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 app.use('/', mainRouter);
 
@@ -18,26 +25,18 @@ app.use('/', mainRouter);
 app.use('*', (req, res) => {
   res.status(404).json({ message: 'Запрашиваемый ресурс не найден' });
 });
-
 // middleware для обработки ошибок валидации от celebrate
-app.use(errors);
-app.use((err, req, res, next) => {
-  // если у ошибки нет статуса, выставляем 500
-  const { statusCode = 500, message } = err;
-  res
-    .status(statusCode)
-    .send({
-      // проверяем статус и выставляем сообщение в зависимости от него
-      message: statusCode === 500
-        ? 'На сервере произошла ошибка'
-        : message,
-    });
-  next();
-});
+app.use(errors());
 
-// подключаемся к серверу mongo
-mongoose.connect(DB_URL, {
-  useNewUrlParser: true,
+app.use((err, req, res, next) => {
+  console.log(err);
+  const { statusCode = 500, message } = err;
+  res.status(statusCode).send({
+    message: statusCode === 500
+      ? 'На сервере произошла ошибка'
+      : message,
+  });
+  next();
 });
 
 app.listen(PORT);

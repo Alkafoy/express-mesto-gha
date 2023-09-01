@@ -18,7 +18,7 @@ router.get('/:userId', celebrate({
 }), getUserById);
 
 // Роут для получения данных пользователя
-router.patch('/me', getUserInfo);
+router.get('/me', getUserInfo);
 
 // Роут для редактирования данных пользователя
 router.patch('/me', celebrate({

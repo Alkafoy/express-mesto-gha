@@ -2,8 +2,8 @@ const mongoose = require('mongoose');
 
 const { CastError, DocumentNotFoundError, ValidationError } = mongoose.Error;
 const Card = require('../models/card');
-const NotFoundError = require('../errors/not-found-err');
-const BadRequestError = require('../errors/bad-request-err');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
 const ForbiddenError = require('../errors/ForbiddenError');
 
 module.exports.getAllCards = (req, res, next) => {

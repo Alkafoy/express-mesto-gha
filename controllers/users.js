@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 
 const { CastError, DocumentNotFoundError, ValidationError } = mongoose.Error;
 const User = require('../models/user');
-const NotFoundError = require('../errors/not-found-err');
-const BadRequestError = require('../errors/bad-request-err');
+const NotFoundError = require('../errors/NotFoundError');
+const BadRequestError = require('../errors/BadRequestError');
 const ConflictError = require('../errors/ConflictError');
 
 // Контроллер для получения всех пользователей
@@ -52,9 +52,10 @@ module.exports.createUser = (req, res, next) => {
         name: user.name, about: user.about, avatar: user.avatar, _id: user._id, email: user.email,
       }))
       .catch((err) => {
+        // console.log(err);
         if (err.code === 11000) {
           next(new ConflictError('Пользователь с такой почтой уже зарегистрирован'));
-        } else if (err instanceof ValidationError) {
+        } else if (err instanceof mongoose.error.ValidationError) {
           next(new BadRequestError(err.message));
         } else {
           next(err);
@@ -105,6 +106,8 @@ module.exports.login = (req, res, next) => {
     .catch((error) => {
       if (error instanceof CastError) {
         next(new BadRequestError('Некорректный формат ID пользователя'));
-      } else { next(error); }
+      } else {
+        next(error);
+      }
     });
 };
