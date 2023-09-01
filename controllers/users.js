@@ -52,10 +52,9 @@ module.exports.createUser = (req, res, next) => {
         name: user.name, about: user.about, avatar: user.avatar, _id: user._id, email: user.email,
       }))
       .catch((err) => {
-        // console.log(err);
         if (err.code === 11000) {
           next(new ConflictError('Пользователь с такой почтой уже зарегистрирован'));
-        } else if (err instanceof mongoose.error.ValidationError) {
+        } else if (err instanceof ValidationError) {
           next(new BadRequestError(err.message));
         } else {
           next(err);
@@ -99,15 +98,11 @@ module.exports.login = (req, res, next) => {
   return User.findUserByCredentials(email, password)
     .then((user) => {
       // создадим токен
-      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
+      const token = jwt.sign({ _id: user._id }, 'my-secret-key', { expiresIn: '7d' });
       // вернём токен
       res.send({ token });
     })
-    .catch((error) => {
-      if (error instanceof CastError) {
-        next(new BadRequestError('Некорректный формат ID пользователя'));
-      } else {
-        next(error);
-      }
+    .catch((err) => {
+      next(err);
     });
 };
