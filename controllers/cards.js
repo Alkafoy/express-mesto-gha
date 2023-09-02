@@ -35,7 +35,7 @@ module.exports.deleteCard = (req, res, next) => {
       if (card.owner.toString() !== req.user._id) {
         throw new ForbiddenError('Нет прав на удаление карточки');
       }
-      return Card.deleteOne(); // Удаляем карточку
+      return Card.deleteOne({ _id: req.params.cardId }); // Удаляем карточку
     })
     // Если документ не найден, создаём ошибку DocumentNotFoundError и передаём её в блок catch
     .then(() => {
