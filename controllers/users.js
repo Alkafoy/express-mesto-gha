@@ -30,11 +30,11 @@ module.exports.getUserById = (req, res, next) => {
       next(err);
     });
 };
-
+// Контроллер для получения информации о пользователе
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      res.send(user);
+      res.status(200).send(user);
     })
     .catch(next);
 };

@@ -10,15 +10,15 @@ const router = express.Router();
 // Роут для получения всех пользователей
 router.get('/', getAllUsers);
 
+// Роут для получения данных пользователя
+router.get('/me', getUserInfo);
+
 // Роут для получения пользователя по _id
 router.get('/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.string().length(24).hex().required(),
   }),
 }), getUserById);
-
-// Роут для получения данных пользователя
-router.get('/me', getUserInfo);
 
 // Роут для редактирования данных пользователя
 router.patch('/me', celebrate({
