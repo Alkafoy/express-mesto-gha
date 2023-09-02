@@ -1,9 +1,12 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const helmet = require('helmet');
 const bodyParser = require('body-parser');
 // обработчик ошибок от celebrate
 const { errors } = require('celebrate');
+const generalErrorHandler = require('./middlewares/generalErrorHandler');
 const mainRouter = require('./routes/index');
+const NotFoundError = require('./errors/NotFoundError');
 
 // Слушаем 3000 порт
 const { PORT = 3000, DB_URL = 'mongodb://127.0.0.1:27017/mestodb' } = process.env;
@@ -19,24 +22,17 @@ mongoose.connect(DB_URL, {
   useUnifiedTopology: true,
 });
 
+app.use(helmet());
+
 app.use('/', mainRouter);
 
 // Обработчик несуществующих путей
-app.use('*', (req, res) => {
-  res.status(404).json({ message: 'Запрашиваемый ресурс не найден' });
+app.use('*', (req, res, next) => {
+  next(new NotFoundError({ message: 'Запрашиваемый ресурс не найден' }));
 });
 // middleware для обработки ошибок валидации от celebrate
 app.use(errors());
 
-app.use((err, req, res, next) => {
-  // console.log(err);
-  const { statusCode = 500, message } = err;
-  res.status(statusCode).send({
-    message: statusCode === 500
-      ? 'На сервере произошла ошибка'
-      : message,
-  });
-  next();
-});
+app.use(generalErrorHandler);
 
 app.listen(PORT);
